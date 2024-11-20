@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+    <title>My Gallery | USmile Dee Collections</title>
+    <meta name="generator" content="GNosZ" />
+    <meta property="og:title" content="My Gallery" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="description" content="USmile Dee Collections" />
+    <meta property="og:description" content="USmile Dee Collections" />
+
+    <meta property="og:site_name" content="USmile Dee" />
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="My Gallery" />
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="dist/img/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="dist/img/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="dist/img/favicon-16x16.png"
+    />
+    <link rel="manifest" href="dist/img/site.webmanifest" />
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"
+    />
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css" />
+    <link rel="stylesheet" href="dist/css/docs.css" />
+    <link rel="stylesheet" href="dist/css/highlighter.css" />
+    <link rel="stylesheet" href="dist/css/adminlte.css" />
+    <link rel="stylesheet" href="plugins/sweetalert2/sweetalert2.min.css" />
+  </head>
+  <body class="sidebar-mini layout-fixed layout-navbar-fixed" id="top">
+    <div class="wrapper">
+
+      <div
+        class="main-authen flex-column justify-content-center align-items-center"
+      >
+        <!-- <h1>My Collections</h1> -->
+        <div class="col-lg-4 m-auto">
+          <div class="card card-body">
+            <form action="" class="form" id="authen">
+              <label for="" class="text-uppercase">session secret</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="fas fa-key" style="width: 20px"></i
+                  ></span>
+                </div>
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="Password"
+                  aria-label="Password"
+                  aria-describedby="basic-addon"
+                  required
+                />
+                <div class="input-group-append">
+                  <input class="btn btn-primary" type="submit" />
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div
+        class="preloader flex-column justify-content-center align-items-center"
+      >
+        <img
+          class="animation__shake"
+          src="dist/img/brand-logo.png"
+          alt="USmileDeeLogo"
+          style="max-width: 50%"
+        />
+      </div>
+      <nav class="main-header navbar navbar-expand navbar-light">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu"
+              ><i class="fa fa-bars"></i
+            ></a>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <div class="theme-switch-wrapper nav-link">
+              <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox" />
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <a class="brand-link logo-switch">
+          <img
+            src="dist/img/apple-touch-icon.png"
+            alt="USmile Dee Logo Small"
+            class="brand-image-xl logo-xs"
+          />
+          <img
+            src="dist/img/brand-logo.png"
+            alt="USmile Dee Logo Large"
+            class="brand-image-xs logo-xl"
+            style="left: 12px"
+          />
+        </a>
+        <div class="sidebar">
+          <nav class="mt-2">
+            <ul
+              class="nav nav-pills nav-sidebar nav-child-indent flex-column"
+              data-widget="treeview"
+              role="menu"
+            >
+              <li class="nav-item">
+                <a class="nav-link" onclick="window.open('#top', '_top')">
+                  <i class="nav-icon fas fa-images"></i>
+                  <p>Gallery</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link">
+                  <i class="nav-icon fas fa-th"></i>
+                  <p>
+                    Collections
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+
+                <ul class="nav nav-treeview">
+                  <!--  -->
+                </ul>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+      <div class="content-wrapper px-4 py-2">
+        <div class="content-header">
+          <!-- <h1>Introduction</h1> -->
+        </div>
+
+        <div class="content px-2">
+          <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio eligendi et unde fugiat.</p> -->
+        </div>
+      </div>
+      <footer class="main-footer">
+        <div class="float-right d-none d-sm-inline">v1.0.0</div>
+        <strong>Copyright &copy; 2024 <a class="">USmile Dee</a>.</strong>
+        All rights reserved.
+      </footer>
+    </div>
+    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="dist/js/adminlte.js"></script>
+    <script src="dist/js/master.js"></script>
+    <script src="dist/js/index.js"></script>
+  </body>
+</html>
