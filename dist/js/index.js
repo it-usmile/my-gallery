@@ -150,7 +150,7 @@ async function pageLoad() {
     );
     params.target = await resource.json();
 
-    if (params.target.secret && ssid) {
+    if (params.target.secret && ssid && ssid == params.target.id) {
       mainAuthen.addClass("d-none");
       contentHeader.html(`<h1>${params.target.title}</h1>`);
 
