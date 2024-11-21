@@ -4,7 +4,7 @@ var toggleSwitch = document.querySelector(
 var ssname = "sc_" + urlParams().get("request");
 
 var currentTheme = localStorage.getItem("theme");
-var ssid = sessionStorage.getItem(ssname);
+var ssid = localStorage.getItem(ssname);
 var mainHeader = document.querySelector(".main-header");
 var contentHeader = $(".content-header");
 var navTreeView = $(".nav-treeview");
@@ -70,14 +70,14 @@ pageLoad().then((response) => {
     });
 
   }
-  console.log(response);
+  // console.log(response);
 });
 
 document.addEventListener("contextmenu", function (e) {
-  // e.preventDefault();
+  e.preventDefault();
 });
 
-$("form#authen").submit(async (e) => {
+$("form#authen").on('submit', async (e) => {
   e.preventDefault();
   swalLoading("Varidating");
   var input = $(e.target).find("input");
@@ -92,10 +92,10 @@ $("form#authen").submit(async (e) => {
     swalMessage("Something went wrong", "Please try again", "error");
   } else {
     //   // setCookie(cname, result.id, 0.25);
-    sessionStorage.setItem(ssname, result.id);
+    localStorage.setItem(ssname, result.id);
     //   // window.location.reload();
-    swalMessage("Session accessed", "Redirect to resource page").then(function () {
-      swalLoading();
+    swalLoading("Your session is accessed", false, "success", 2000, false).then(function () {
+      Swal.hideLoading();
       window.location.reload();
     })
   }
@@ -226,7 +226,7 @@ function navItemComponent(title, link = null, target = "_top") {
 }
 
 function cardComponent(title, id, imageObj, length) {
-  
+
   var col = 4;
   if (length <= 2) {
     col = 12;

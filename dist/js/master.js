@@ -5,8 +5,9 @@ var scriptLink = `https://script.google.com/macros/s/AKfycbxO5fNXc7c7OoSwo7juM6c
 var id = urlParams().get("id");
 var request = urlParams().get("request");
 
-function swalLoading(title, html = null, icon = false, timer = false) {
+function swalLoading(title, html = null, icon = false, timer = false, loading = true) {
   title = title ? title : "Loading";
+  var showConfirmButton = loading ? true : false;
   return Swal.fire({
     icon,
     html,
@@ -14,9 +15,12 @@ function swalLoading(title, html = null, icon = false, timer = false) {
     allowOutsideClick: false,
     title: title + "<span></span>",
     timer,
+    showConfirmButton,
     didOpen: () => {
       var i = 0;
-      Swal.showLoading();
+      if (loading) {
+        Swal.showLoading();
+      }
       const timer = Swal.getPopup().querySelector("span");
       setInterval(() => {
         if (i < 3) {
