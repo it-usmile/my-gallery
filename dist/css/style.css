@@ -22,3 +22,7 @@ html {
 .swal2-container {
   z-index: 9998;
 }
+
+i {
+  pointer-events: none;
+}

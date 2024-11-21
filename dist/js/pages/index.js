@@ -1,11 +1,7 @@
-var toggleSwitch = document.querySelector(
-  '.theme-switch input[type="checkbox"]'
-);
-var ssname = "sc_" + urlParams().get("request");
 
-var currentTheme = localStorage.getItem("theme");
+var ssname = "sc_" + urlParams().get("request");
 var ssid = localStorage.getItem(ssname);
-var mainHeader = document.querySelector(".main-header");
+
 var contentHeader = $(".content-header");
 var navTreeView = $(".nav-treeview");
 var mainAuthen = $(".main-authen");
@@ -74,7 +70,7 @@ pageLoad().then((response) => {
 });
 
 document.addEventListener("contextmenu", function (e) {
-  // e.preventDefault();
+  e.preventDefault();
 });
 
 $("form#authen").on('submit', async (e) => {
@@ -125,18 +121,6 @@ content.on("click", "img", async function (e) {
   }
 });
 
-if (currentTheme) {
-  if (currentTheme === "dark") {
-    if (!document.body.classList.contains("dark-mode")) {
-      document.body.classList.add("dark-mode");
-    }
-    if (mainHeader.classList.contains("navbar-light")) {
-      mainHeader.classList.add("navbar-dark");
-      mainHeader.classList.remove("navbar-light");
-    }
-    toggleSwitch.checked = true;
-  }
-}
 
 async function pageLoad() {
   swalLoading();
@@ -261,27 +245,3 @@ function cardComponent(title, id, imageObj, length) {
   component += ``;
   return component;
 }
-
-function switchTheme(e) {
-  if (e.target.checked) {
-    if (!document.body.classList.contains("dark-mode")) {
-      document.body.classList.add("dark-mode");
-    }
-    if (mainHeader.classList.contains("navbar-light")) {
-      mainHeader.classList.add("navbar-dark");
-      mainHeader.classList.remove("navbar-light");
-    }
-    localStorage.setItem("theme", "dark");
-  } else {
-    if (document.body.classList.contains("dark-mode")) {
-      document.body.classList.remove("dark-mode");
-    }
-    if (mainHeader.classList.contains("navbar-dark")) {
-      mainHeader.classList.add("navbar-light");
-      mainHeader.classList.remove("navbar-dark");
-    }
-    localStorage.setItem("theme", "light");
-  }
-}
-
-toggleSwitch.addEventListener("change", switchTheme, false);
