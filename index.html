@@ -44,12 +44,12 @@
     <link rel="stylesheet" href="dist/css/highlighter.css" />
     <link rel="stylesheet" href="dist/css/adminlte.css" />
     <link rel="stylesheet" href="plugins/sweetalert2/sweetalert2.min.css" />
+    <link rel="stylesheet" href="dist/css/style.css" />
   </head>
   <body class="sidebar-mini layout-fixed layout-navbar-fixed" id="top">
     <div class="wrapper">
-
       <div
-        class="main-authen flex-column justify-content-center align-items-center"
+        class="main-authen dark-mode flex-column justify-content-center align-items-center"
       >
         <!-- <h1>My Collections</h1> -->
         <div class="col-lg-4 m-auto">
@@ -78,6 +78,7 @@
           </div>
         </div>
       </div>
+
       <div
         class="preloader flex-column justify-content-center align-items-center"
       >
@@ -167,6 +168,30 @@
         <strong>Copyright &copy; 2024 <a class="">USmile Dee</a>.</strong>
         All rights reserved.
       </footer>
+
+      <div class="modal fade" id="showRecord" aria-hidden="true" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+          <form class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="targetTitle">Record</h4>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <img src="" alt="Example Photo" class="w-100" id="record" />
+              <!-- <p>One fine body…</p> -->
+            </div>
+          </form>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
     </div>
     <script src="plugins/jquery/jquery.min.js"></script>
     <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

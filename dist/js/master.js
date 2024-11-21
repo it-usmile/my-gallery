@@ -5,14 +5,15 @@ var scriptLink = `https://script.google.com/macros/s/AKfycbxO5fNXc7c7OoSwo7juM6c
 var id = urlParams().get("id");
 var request = urlParams().get("request");
 
-function swalLoading(title, message, icon = false) {
+function swalLoading(title, html = null, icon = false, timer = false) {
   title = title ? title : "Loading";
   return Swal.fire({
     icon,
-    html: message,
+    html,
     allowEscapeKey: false,
     allowOutsideClick: false,
     title: title + "<span></span>",
+    timer,
     didOpen: () => {
       var i = 0;
       Swal.showLoading();
@@ -30,12 +31,15 @@ function swalLoading(title, message, icon = false) {
   });
 }
 
-function swalMessage(title, message, icon = false) {
+function swalMessage(title, html, icon = false, confirmButtonText = "OK") {
   title = title ? title : "Something went wrong.";
   return Swal.fire({
     title: title,
-    html: message,
+    html,
     icon,
+    confirmButtonText,
+    allowEscapeKey: false,
+    allowOutsideClick: false,
   });
 }
 

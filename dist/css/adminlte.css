@@ -11105,7 +11105,7 @@ a.text-dark:focus {
   animation: wobble 1500ms;
 }
 
-.preloader, .main-authen {
+.preloader {
   display: -ms-flexbox;
   display: flex;
   background-color: #f4f6f9;
@@ -11118,10 +11118,10 @@ a.text-dark:focus {
   z-index: 9999;
 }
 
-.dark-mode .preloader, .main-authen {
+/* .dark-mode .preloader {
   background-color: #454d55 !important;
   color: #fff;
-}
+} */
 
 html.scroll-smooth {
   scroll-behavior: smooth;

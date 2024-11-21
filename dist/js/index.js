@@ -1,30 +1,127 @@
 var toggleSwitch = document.querySelector(
   '.theme-switch input[type="checkbox"]'
 );
+var ssname = "sc_" + urlParams().get("request");
+
 var currentTheme = localStorage.getItem("theme");
-var sessionId = localStorage.getItem("ssid");
+var ssid = sessionStorage.getItem(ssname);
 var mainHeader = document.querySelector(".main-header");
 var contentHeader = $(".content-header");
 var navTreeView = $(".nav-treeview");
+var mainAuthen = $(".main-authen");
+var mainSidebar = $(".main-sidebar");
+var contentWrapper = $(".content-wrapper");
+var mainFooter = $(".main-footer");
 var content = $(".content");
+var access = ["resources", "secret"];
+
+var targetRequest;
+switch (request) {
+  case access[0]:
+    targetRequest = "lists";
+    break;
+  case access[1]:
+    targetRequest = "collections";
+    break;
+}
 
 pageLoad().then((response) => {
-  if (response.error) {
+  var message, confirm;
+  if (response.auth || response.target.length == 0) {
+
+    mainAuthen.addClass("d-none");
+
+    confirm = "Retry";
+  }
+  if (response.target.length == 0) {
+    $("body").addClass("dark-mode");
+    message = "Not Found";
+    message = message ? message : response.error;
+    contentHeader.html(`<h1>${message}</h1>`);
+    // setTimeout(() => {
+    hidePreloader();
     swalMessage(
       "Something went wrong!",
-      `<pre><code>${response.error}</code></pre>`,
-      "error"
+      `<pre><code>${message}</code></pre>`,
+      "error", confirm
     ).then(() => {
-      window.location.reload();
+      swalLoading("Reloading", false, false, 1500).then(() => {
+        window.location.reload();
+      })
     });
+    // })
   } else {
+    hidePreloader();
+    var icon = 'success';
+    var title = 'Your resources has been loaded';
+    if (!response.auth) {
+      icon = "error";
+      title = "Unauthorization";
+      mainHeader.classList.add("d-none");
+      mainSidebar.addClass("d-none");
+      contentWrapper.addClass("d-none");
+      mainFooter.addClass("d-none");
+    }
     Swal.fire({
-      icon: "success",
-      title: "Your resources has been loaded",
+      icon,
+      title,
       showConfirmButton: false,
       timer: 1500,
     });
-    console.log(response);
+
+  }
+  console.log(response);
+});
+
+document.addEventListener("contextmenu", function (e) {
+  // e.preventDefault();
+});
+
+$("form#authen").submit(async (e) => {
+  e.preventDefault();
+  swalLoading("Varidating");
+  var input = $(e.target).find("input");
+  var secret = input[0].value;
+  var link = `${scriptLink}?hash=${targetRequest}&id=${urlParams().get("id")}&secret=${secret}`;
+  // // swalLoading();
+  var data = await fetch(link);
+  var result = await data.json();
+  console.log(result);
+  if (result.message) {
+    //   // alert(result.message);
+    swalMessage("Something went wrong", "Please try again", "error");
+  } else {
+    //   // setCookie(cname, result.id, 0.25);
+    sessionStorage.setItem(ssname, result.id);
+    //   // window.location.reload();
+    swalMessage("Session accessed", "Redirect to resource page").then(function () {
+      swalLoading();
+      window.location.reload();
+    })
+  }
+});
+
+content.on("click", "img", async function (e) {
+  //
+  // console.log(e.target);
+
+  if (e.target && e.target.matches(".block-image")) {
+    e.preventDefault();
+    var targetId = $(e.target).data("target-id");
+    var targetName = $(e.target).data("target-name");
+    swalLoading("Wait a moment", targetName);
+    $("#targetTitle").html(targetName);
+    var link = `https://lh3.googleusercontent.com/d/${targetId}=w1000`;
+    // $("img#record").attr("src", link);
+    $("img#record").attr("src", await fetch(link).then(async (result) => {
+      var imageBlob = await result.blob();
+      var imageObjectURL = URL.createObjectURL(imageBlob);
+      Swal.close();
+      return imageObjectURL;
+    })
+    );
+    $("#showRecord").modal("show");
+    // // console.log();
   }
 });
 
@@ -44,22 +141,17 @@ if (currentTheme) {
 async function pageLoad() {
   swalLoading();
   var params = new Array();
-  var access = ["resources", "secret"];
-  if (access.includes(request)) {
-    var targetRequest;
-    switch (request) {
-      case access[0]:
-        targetRequest = "lists";
-        break;
-      case access[1]:
-        targetRequest = "collections";
-        break;
-    }
+
+  // hidePreloader();
+  if (request && access.includes(request)) {
+
     var resource = await fetch(
       scriptLink + `?resource=${targetRequest}&id=${id}`
     );
     params.target = await resource.json();
-    if (params.target.secret && sessionId) {
+
+    if (params.target.secret && ssid) {
+      mainAuthen.addClass("d-none");
       contentHeader.html(`<h1>${params.target.title}</h1>`);
 
       if (params.target.id != params.target.resource) {
@@ -68,6 +160,7 @@ async function pageLoad() {
         );
         await records.json().then(function (records) {
           records.collection = params.target.title;
+          console.log(params.target.type.name)
           content.append(
             cardComponent(
               params.target.type.name,
@@ -81,7 +174,7 @@ async function pageLoad() {
       hidePreloader();
       var members = await fetch(
         scriptLink +
-          `?resource=members&src=${params.target.resource}&deny=${params.target.id}`
+        `?resource=members&src=${params.target.resource}&deny=${params.target.id}`
       );
       await members.json().then((result) => {
         for (var i = 0; i < result.length; i++) {
@@ -105,11 +198,10 @@ async function pageLoad() {
           );
         }
       });
-    } else {
-      hidePreloader();
+      params.auth = true;
     }
   } else {
-    params.error = "Access denined!";
+    params.error = "Bad Request!";
   }
   return params;
 }
@@ -134,6 +226,7 @@ function navItemComponent(title, link = null, target = "_top") {
 }
 
 function cardComponent(title, id, imageObj, length) {
+  
   var col = 4;
   if (length <= 2) {
     col = 12;
@@ -146,12 +239,11 @@ function cardComponent(title, id, imageObj, length) {
   component += `</div>`;
   component += `<div class="card-body row">`;
   imageObj.forEach(function (target) {
-    var targetTitle = imageObj.collection
-      ? imageObj.collection.name
-      : target.collection.name;
+    // console.log(target)
+    target.collection = target.collection ? target.collection : title;
     component += `<div class="col-sm-${col} mb-3">`;
     component += `<a href="javascript:void(0);" class="linkTarget">`;
-    component += `<img src="https://drive.google.com/thumbnail?id=${target.id}&sz=w1000" class="w-100 h-100 mb-2 block-image" style="object-fit: cover;" alt="${target.name}" data-target-id="${target.id}" data-target-name="${targetTitle}" />`;
+    component += `<img src="https://drive.google.com/thumbnail?id=${target.id}&sz=w1000" class="w-100 h-100 mb-2 block-image" style="object-fit: cover;" alt="${target.name}" data-target-id="${target.id}" data-target-name="${target.collection}" />`;
     component += `</a>`;
     component += `</div>`;
   });
