@@ -74,7 +74,7 @@ pageLoad().then((response) => {
 });
 
 document.addEventListener("contextmenu", function (e) {
-  e.preventDefault();
+  // e.preventDefault();
 });
 
 $("form#authen").on('submit', async (e) => {
@@ -151,22 +151,30 @@ async function pageLoad() {
     params.target = await resource.json();
 
     if (params.target.secret && ssid && ssid == params.target.id) {
+      var option = params.target.description ? ' ' + params.target.description : '';
       mainAuthen.addClass("d-none");
-      contentHeader.html(`<h1>${params.target.title}</h1>`);
+      contentHeader.html(`<h1>${params.target.title + option}</h1>`);
 
       if (params.target.id != params.target.resource) {
         var records = await fetch(
           scriptLink + `?resource=records&collection=${params.target.id}`
         );
-        await records.json().then(function (records) {
-          records.collection = params.target.title;
-          console.log(params.target.type.name)
+        await records.json().then(function (targetData) {
+          // var targetArray = targetData;
+          var collection = params.target.title;
+          if (params.target.description) {
+            collection += ' ' + params.target.description;
+          }
+          for (var i = 0; i < targetData.length; i++) {
+            targetData[i].collection = collection;
+          }
+          // console.log(targetData)
           content.append(
             cardComponent(
               params.target.type.name,
               params.target.type.id,
-              records,
-              records.length
+              targetData,
+              targetData.length
             )
           );
         });
@@ -181,6 +189,7 @@ async function pageLoad() {
           var target = result[i];
           var records = new Array();
           target.row.forEach((val) => {
+            // console.log(val)
             val.data.forEach((data) => {
               records.push({ collection: val.info.label, ...data });
             });
