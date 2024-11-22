@@ -40,6 +40,19 @@
       href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"
     />
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css" />
+    <!-- DataTables -->
+    <link
+      rel="stylesheet"
+      href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css"
+    />
     <link
       rel="stylesheet"
       href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css"
@@ -154,14 +167,17 @@
               role="menu"
             >
               <li class="nav-item">
-                <a class="nav-link" onclick="javascript:void(0);">
+                <a
+                  class="nav-link nav-link-index"
+                  onclick="window.open('admin.html','_top')"
+                >
                   <i class="nav-icon fas fa-images"></i>
                   <p>Dashboard</p>
                 </a>
               </li>
 
-              <li class="nav-item">
-                <a class="nav-link">
+              <li class="nav-item nav-item-dropdown">
+                <a class="nav-link nav-link-dropdown">
                   <i class="nav-icon fas fa-th"></i>
                   <p>
                     Resources
@@ -177,7 +193,9 @@
           </nav>
         </div>
         <div class="sidebar-custom">
-          <a class="btn btn-link" title="Setting"><i class="fas fa-cogs"></i></a>
+          <a class="btn btn-link" title="Setting"
+            ><i class="fas fa-cogs"></i
+          ></a>
           <a class="btn btn-secondary hide-on-collapse pos-right btn-logout"
             >Logout</a
           >
@@ -190,6 +208,39 @@
 
         <div class="content px-2">
           <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio eligendi et unde fugiat.</p> -->
+          <div class="card content-resources d-none mb-3">
+            <div class="card-header">
+              <h3 class="card-title">DataTable with default features</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table
+                id="example"
+                class="table table-bordered table-striped nowrap"
+              >
+                <thead>
+                  <tr>
+                    <th>TITLE</th>
+                    <th>SOURCE</th>
+                    <th>OPTIONS</th>
+                  </tr>
+                </thead>
+                <tbody class="table-body-resources">
+                  <!--  -->
+                  <!-- test -->
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th>TITLE</th>
+                    <th>SOURCE</th>
+                    <th>OPTIONS</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
         </div>
       </div>
       <footer class="main-footer">
@@ -203,6 +254,19 @@
     <script src="plugins/jquery/jquery.min.js"></script>
     <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="plugins/jszip/jszip.min.js"></script>
+    <script src="plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
     <script src="dist/js/adminlte.js"></script>
     <script src="dist/js/master.js"></script>

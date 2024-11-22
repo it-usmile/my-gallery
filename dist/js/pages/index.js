@@ -2,13 +2,6 @@
 var ssname = "sc_" + urlParams().get("request");
 var ssid = localStorage.getItem(ssname);
 
-var contentHeader = $(".content-header");
-var navTreeView = $(".nav-treeview");
-var mainAuthen = $(".main-authen");
-var mainSidebar = $(".main-sidebar");
-var contentWrapper = $(".content-wrapper");
-var mainFooter = $(".main-footer");
-var content = $(".content");
 var access = ["resources", "secret"];
 
 var targetRequest;
@@ -23,49 +16,51 @@ switch (request) {
 
 pageLoad().then((response) => {
   var message, confirm;
-  if (response.auth || response.target.length == 0) {
+  setTimeout(() => {
+    if (response.auth || !response.target) {
 
-    mainAuthen.addClass("d-none");
+      mainAuthen.addClass("d-none");
 
-    confirm = "Retry";
-  }
-  if (response.target.length == 0) {
-    $("body").addClass("dark-mode");
-    message = "Not Found";
-    message = message ? message : response.error;
-    contentHeader.html(`<h1>${message}</h1>`);
-    // setTimeout(() => {
-    hidePreloader();
-    swalMessage(
-      "Something went wrong!",
-      `<pre><code>${message}</code></pre>`,
-      "error", confirm
-    ).then(() => {
-      swalLoading("Reloading", false, false, 1500).then(() => {
-        window.location.reload();
-      })
-    });
-    // })
-  } else {
-    hidePreloader();
-    var icon = 'success';
-    var title = 'Your resources has been loaded';
-    if (!response.auth) {
-      icon = "error";
-      title = "Unauthorization";
-      mainHeader.classList.add("d-none");
-      mainSidebar.addClass("d-none");
-      contentWrapper.addClass("d-none");
-      mainFooter.addClass("d-none");
+      confirm = "Retry";
     }
-    Swal.fire({
-      icon,
-      title,
-      showConfirmButton: false,
-      timer: 1500,
-    });
+    if (!response.target) {
+      $("body").addClass("dark-mode");
+      message = "Not Found";
+      message = message ? message : response.error;
+      contentHeader.html(`<h1>${message}</h1>`);
+      // setTimeout(() => {
+      hidePreloader();
+      swalMessage(
+        "Something went wrong!",
+        `<pre><code>${message}</code></pre>`,
+        "error", confirm
+      ).then(() => {
+        swalLoading("Reloading", false, false, 1500).then(() => {
+          window.location.reload();
+        })
+      });
+      // })
+    } else {
+      hidePreloader();
+      var icon = 'success';
+      var title = 'Your resources has been loaded';
+      if (!response.auth) {
+        icon = "error";
+        title = "Unauthorization";
+        mainHeader.classList.add("d-none");
+        mainSidebar.addClass("d-none");
+        contentWrapper.addClass("d-none");
+        mainFooter.addClass("d-none");
+      }
+      Swal.fire({
+        icon,
+        title,
+        showConfirmButton: false,
+        timer: 1500,
+      });
 
-  }
+    }
+  }, 1000);
   // console.log(response);
 });
 
@@ -208,15 +203,6 @@ async function getRecords(collection) {
 }
 //
 
-function navItemComponent(title, link = null, target = "_top") {
-  var elements = `<li class="nav-item">`;
-  elements += `<a class="nav-link" onclick="window.open('${link}', '${target}')">`;
-  elements += `<i class="far fa-circle nav-icon"></i>`;
-  elements += `<p>${title}</p>`;
-  elements += `</a>`;
-  elements += `</li>`;
-  return elements;
-}
 
 function cardComponent(title, id, imageObj, length) {
 
@@ -244,4 +230,14 @@ function cardComponent(title, id, imageObj, length) {
   component += `</div>`;
   component += ``;
   return component;
+}
+
+function navItemComponent(title, link = null, target = "_top") {
+  var elements = `<li class="nav-item">`;
+  elements += `<a class="nav-link" onclick="window.open('${link}', '${target}')">`;
+  elements += `<i class="far fa-circle nav-icon"></i>`;
+  elements += `<p>${title}</p>`;
+  elements += `</a>`;
+  elements += `</li>`;
+  return elements;
 }
