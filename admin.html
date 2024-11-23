@@ -55,6 +55,10 @@
     />
     <link
       rel="stylesheet"
+      href="plugins/datatables-rowgroup/css/rowGroup.bootstrap4.min.css"
+    />
+    <link
+      rel="stylesheet"
       href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css"
     />
     <link rel="stylesheet" href="dist/css/docs.css" />
@@ -215,7 +219,7 @@
             <!-- /.card-header -->
             <div class="card-body">
               <table
-                id="example"
+                id="example1"
                 class="table table-bordered table-striped nowrap"
               >
                 <thead>
@@ -233,6 +237,41 @@
                   <tr>
                     <th>TITLE</th>
                     <th>SOURCE</th>
+                    <th>OPTIONS</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+          <div class="card content-collections d-none mb-3">
+            <div class="card-header">
+              <h3 class="card-title">DataTable with default features</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table
+                id="example2"
+                class="table table-bordered table-striped nowrap"
+              >
+                <thead>
+                  <tr>
+                    <th>TITLE</th>
+                    <th>SOURCE</th>
+                    <th>SECRET</th>
+                    <th>OPTIONS</th>
+                  </tr>
+                </thead>
+                <tbody class="table-body-collections">
+                  <!--  -->
+                  <!-- test -->
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th>TITLE</th>
+                    <th>SOURCE</th>
+                    <th>SECRET</th>
                     <th>OPTIONS</th>
                   </tr>
                 </tfoot>
@@ -259,6 +298,8 @@
     <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-rowgroup/js/dataTables.rowGroup.min.js"></script>
+    <script src="plugins/datatables-rowgroup/js/rowGroup.bootstrap4.min.js"></script>
     <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
     <script src="plugins/jszip/jszip.min.js"></script>

@@ -1,8 +1,36 @@
 var ssuid = localStorage.getItem("ssuid");
 var contentResources = $(".content-resources");
+var targetTable = 1;
+var targetTableOptions = {
+    "responsive": true, "autoWidth": false,
+};
+// var buttonArray = ["copy", "csv", "excel", "pdf", "print"];
+targetTableOptions.columnDefs = [{ targets: [1, 2], searchable: false, orderable: false }];
+
+// navTreeView.html('');
+
+if (id) {
+    contentResources = $(".content-collections");
+    targetTable = 2;
+    // targetTableOptions.order = [[2, 'asc']];
+    // targetTableOptions.buttons = ["copy", "csv", "excel", "pdf", "print"];
+    // targetTableOptions.buttons = new Array();
+    // buttonArray.forEach((val, key) => {
+    //     targetTableOptions.buttons.push({ extend: val, exportOptions: { columns: ':visible' } })
+    // })
+    targetTableOptions.columnDefs.push({ targets: 2, visible: false });
+    targetTableOptions.columnDefs.push({ targets: 3, searchable: false, orderable: false });
+    // targetTableOptions.lengthChange = false;
+    targetTableOptions.rowGroup = {
+        dataSrc: (row) => {
+            let base = row[2] == 'true' ? 'group secret' : 'group resource';
+            return base.toUpperCase();
+        }
+    };
+}
 
 pageLoad().then(async (response) => {
-    hidePreloader();
+    // hidePreloader();
     var icon = 'success';
     var title = 'Your resources has been loaded';
     if (!response.auth) {
@@ -14,10 +42,8 @@ pageLoad().then(async (response) => {
         contentWrapper.addClass("d-none");
         mainFooter.addClass("d-none");
     } else {
-        mainAuthen.addClass('d-none');
-        $("#example").DataTable({
-            "responsive": true, "autoWidth": false,
-        }).buttons().container().appendTo('#example_wrapper .col-md-6:eq(0)');
+        // mainAuthen.addClass('d-none');
+        $("#example" + targetTable.toString()).DataTable(targetTableOptions).buttons().container().appendTo('#example' + targetTable.toString() + '_wrapper .col-md-6:eq(0)');
         // $("#example").addClass("nowrap");
     }
     Swal.fire({
@@ -80,6 +106,7 @@ $("form#authen").on('submit', async (e) => {
 });
 
 async function pageLoad() {
+    swalLoading();
     var response = { auth: true };
     // response.resource = new Array();
     if (!ssuid) {
@@ -87,7 +114,7 @@ async function pageLoad() {
 
         return response;
     } else {
-
+        mainAuthen.addClass('d-none');
         // // console.log(ssuid)
         var targetResource, navLink, message;
         switch (request) {
@@ -96,9 +123,9 @@ async function pageLoad() {
                 break;
             case 'resources':
                 // nav-link-dropdown
-                $("a#" + id).addClass("active");
+                // $("a#" + id).addClass("active");
                 $(".nav-item-dropdown").addClass('menu-is-opening menu-open');
-                message = "Collection";
+                // message = "Collection";
                 navLink = "dropdown";
                 targetResource = "members"
             // break;
@@ -113,12 +140,13 @@ async function pageLoad() {
         resourceRow.forEach((row) => {
             // // console.log(row);
             if (row.id == id) {
-                message += ` ${row.title}`;
+                message = row.title;
             }
             navTreeView.append(navItemComponent(row));
         })
+        contentHeader.html(`<h1>${message}</h1>`);
 
-
+        hidePreloader();
         var targetLink = scriptLink + `?resource=` + targetResource;
         targetLink += targetResource == "members" ? '&src=' : '&id=';
         targetLink += id ? id : '';
@@ -133,12 +161,18 @@ async function pageLoad() {
             if (data.length > 0) {
                 data.forEach((val) => {
                     // // console.log(val);
+                    // var tableBodyResources = $(".table-body-resources");
                     var tableBodyResources = $(".table-body-resources");
+                    if (id) {
+                        tableBodyResources = $(".table-body-collections");
+                    }
                     if (val.row) {
 
+                        // console.log(val);
                         val.row.forEach((row) => {
-                            // console.log(row);
                             var dataObj = { id: row.info.id, title: row.info.label };
+                            dataObj.secret = row.secret;
+                            // console.log(row);
                             // dataArray.push(dataObj);
                             tableBodyResources.append(resourceRowComponent(dataObj));
                         })
@@ -163,7 +197,7 @@ async function pageLoad() {
             contentResources.removeClass("d-none");
         })
 
-        contentHeader.html(`<h1>${message}</h1>`);
+        // contentHeader.html(`<h1>${message}</h1>`);
         $(`.nav-link-${navLink}`).addClass('active');
     }
     return response;
@@ -172,7 +206,11 @@ async function pageLoad() {
 
 function navItemComponent(dataObj) {
     var elements = `<li class="nav-item">`;
-    elements += `<a class="nav-link" id="${dataObj.id}" onclick="linkOpen(event, 'admin.html?request=resources');">`;
+    var active;
+    if (id && id == dataObj.id) {
+        active = 'active';
+    }
+    elements += `<a class="nav-link ${active}" id="${dataObj.id}" onclick="linkOpen(event, 'admin.html?request=resources');">`;
     elements += `<i class="far fa-circle nav-icon"></i>`;
     elements += `<p>${dataObj.title}</p>`;
     elements += `</a>`;
@@ -185,12 +223,27 @@ function resourceRowComponent(dataObj) {
     targetLink += dataObj.resource ? 'lists&id=' : 'collections&id=';
     targetLink += dataObj.id;
     var elements = `<tr>`;
-    elements += `<td>${dataObj.title}</td>`;
+    // elements += `<td>${dataObj.title}</td>`;
+    if (!id) {
+        elements += `<td>`;
+        elements += `<a class="mr-2" id="${dataObj.id}" onclick="linkOpen(event, 'admin.html?request=resources');" title="Detail">${dataObj.title}</a>`;
+        elements += `</td>`;
+        // 
+    } else {
+        elements += `<td>${dataObj.title}</td>`;
+    }
     elements += `<td>`;
     elements += `<a class="" onclick="window.open('${targetLink}', '_blank');" title="Public Link">Example<i class="fas fa-external-link-alt ml-2"></i></a>`;
     elements += `</td>`;
+    if (id) {
+        elements += `<td>${dataObj.secret}</td>`;
+    }
     elements += `<td>`;
-    elements += `<a class="mr-2" id="${dataObj.id}" onclick="linkOpen(event, 'admin.html?request=resources');"><i class="fas fa-search"></i></a>`;
+    elements += `<a class="mr-2" id="${dataObj.id}" onclick="" title="RQCode"><i class="fas fa-qrcode"></i></a>`;
+    if (id) {
+        elements += `<a class="mr-2" id="${dataObj.id}" onclick="window.open('https://drive.google.com/drive/u/0/folders/${dataObj.id}', '_blank');" title="Uploads"><i class="fas fa-upload"></i></a>`;
+    }
+    elements += `<a class="mr-2" id="${dataObj.id}" onclick="" title="Trash"><i class="fas fa-trash text-danger"></i></a>`;
     elements += `</td>`;
     elements += `</tr>`;
     return elements;
