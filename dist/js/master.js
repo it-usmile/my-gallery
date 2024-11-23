@@ -1,7 +1,7 @@
 
 var scriptLink = `https://script.google.com/macros/s/AKfycbxO5fNXc7c7OoSwo7juM6c-0-FqKxgsih9RoDtGn769cfBTgxpdTybEUailm9Fli_R7/exec`;
 var publicLink = `https://it-usmile.github.io/my-gallery/`;
-// var publicLink = `//127.0.0.1:5500/`;
+var publicLink = `//127.0.0.1:5500/`;
 
 var toggleSwitch = document.querySelector(
   '.theme-switch input[type="checkbox"]'
@@ -33,6 +33,11 @@ if (currentTheme) {
     }
     toggleSwitch.checked = true;
   }
+}
+
+function linkOpen(event, location, target = "_top") {
+  var id = event.target.id ? event.target.id : null;
+  window.open(`${location}&id=${id}`, target)
 }
 // $(document.body).load(() => {
 

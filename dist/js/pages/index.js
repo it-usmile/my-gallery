@@ -2,19 +2,21 @@
 var ssname = "sc_" + urlParams().get("request");
 var ssid = localStorage.getItem(ssname);
 
-var access = ["resources", "secret"];
+var access = ["lists", "collections"];
 
-var targetRequest;
-switch (request) {
-  case access[0]:
-    targetRequest = "lists";
-    break;
-  case access[1]:
-    targetRequest = "collections";
-    break;
-}
+var targetRequest = request;
+// var targetRequest;
+// switch (request) {
+//   case access[0]:
+//     targetRequest = "lists";
+//     break;
+//   case access[1]:
+//     targetRequest = "collections";
+//     break;
+// }
 
 pageLoad().then((response) => {
+  // console.log(response);
   var message, confirm;
   setTimeout(() => {
     if (response.auth || !response.target) {
@@ -61,7 +63,7 @@ pageLoad().then((response) => {
 
     }
   }, 1000);
-  // console.log(response);
+  // // console.log(response);
 });
 
 document.addEventListener("contextmenu", function (e) {
@@ -71,19 +73,32 @@ document.addEventListener("contextmenu", function (e) {
 $("form#authen").on('submit', async (e) => {
   e.preventDefault();
   swalLoading("Varidating");
+
+  var resource = await fetch(
+    scriptLink + `?resource=${targetRequest}&id=${id}`
+  );
+  var target = await resource.json();
+  // console.log(target);
+  var targetId = urlParams().get("id");
+  if (!target.secret) {
+    targetId = target.resource.id
+    targetRequest = access[0];
+    ssname = 'sc_' + access[0];
+  }
+
   var input = $(e.target).find("input");
   var secret = input[0].value;
-  var link = `${scriptLink}?hash=${targetRequest}&id=${urlParams().get("id")}&secret=${secret}`;
-  // // swalLoading();
-  var data = await fetch(link);
-  var result = await data.json();
-  console.log(result);
-  if (result.message) {
+  var targetLink = `${scriptLink}?hash=${targetRequest}&id=${targetId}&secret=${secret}`;
+  var targetData = await fetch(targetLink);
+  var targetResource = await targetData.json();
+  // // console.log(targetResource);
+
+  if (targetResource.message) {
     //   // alert(result.message);
     swalMessage("Something went wrong", "Please try again", "error");
   } else {
     //   // setCookie(cname, result.id, 0.25);
-    localStorage.setItem(ssname, result.id);
+    localStorage.setItem(ssname, targetResource.id);
     //   // window.location.reload();
     swalLoading("Your session is accessed", false, "success", 2000, false).then(function () {
       Swal.hideLoading();
@@ -94,7 +109,7 @@ $("form#authen").on('submit', async (e) => {
 
 content.on("click", "img", async function (e) {
   //
-  // console.log(e.target);
+  // // console.log(e.target);
 
   if (e.target && e.target.matches(".block-image")) {
     e.preventDefault();
@@ -112,7 +127,7 @@ content.on("click", "img", async function (e) {
     })
     );
     $("#showRecord").modal("show");
-    // // console.log();
+    // // // console.log();
   }
 });
 
@@ -128,26 +143,49 @@ async function pageLoad() {
       scriptLink + `?resource=${targetRequest}&id=${id}`
     );
     params.target = await resource.json();
-
-    if (params.target.secret && ssid && ssid == params.target.id) {
-      var option = params.target.description ? ' ' + params.target.description : '';
+    // // console.log(params.target)
+    params.target.secret = params.target.secret;
+    var targetId = params.target.id;
+    if (!params.target.secret && params.target.resource) {
+      params.target.secret = params.target.resource.secret;
+      targetId = params.target.resource.id;
+      ssid = localStorage.getItem("sc_lists");
+    }
+    // console.log(ssid)
+    // console.log(params.target.id)
+    // console.log(targetId)
+    if (params.target.secret && ssid != targetId) {
+      params.auth = false;
+      // if (ssid == targetId) {
+      //   params.auth = true;
+      // }
+    } else if (ssid == targetId) {
+      params.auth = true;
       mainAuthen.addClass("d-none");
-      contentHeader.html(`<h1>${params.target.title + option}</h1>`);
+      var titlePage = params.target.title
+      var option = params.target.description ? ' ' + params.target.description : '';
+      if (params.target.resource.id) {
+        titlePage = params.target.resource.title;
+        // ssid = localStorage.getItem("sc_lists");
+      }
+      contentHeader.html(`<h1>${titlePage}</h1>`);
 
-      if (params.target.id != params.target.resource) {
-        var records = await fetch(
-          scriptLink + `?resource=records&collection=${params.target.id}`
-        );
-        await records.json().then(function (targetData) {
-          // var targetArray = targetData;
-          var collection = params.target.title;
-          if (params.target.description) {
-            collection += ' ' + params.target.description;
-          }
-          for (var i = 0; i < targetData.length; i++) {
-            targetData[i].collection = collection;
-          }
-          // console.log(targetData)
+      // if (params.target.id != params.target.resource) {
+      var records = await fetch(
+        scriptLink + `?resource=records&collection=${params.target.id}`
+      );
+      await records.json().then(function (targetData) {
+        // var targetArray = targetData;
+        var collection = params.target.title;
+        if (params.target.description) {
+          collection += ' ' + params.target.description;
+        }
+        for (var i = 0; i < targetData.length; i++) {
+          targetData[i].collection = collection;
+        }
+        // // console.log(targetData)
+        // var targetName = '';
+        if (params.target.type) {
           content.append(
             cardComponent(
               params.target.type.name,
@@ -156,38 +194,49 @@ async function pageLoad() {
               targetData.length
             )
           );
-        });
-      }
+        }
+      });
+      // }
       hidePreloader();
+      var targetResource = params.target.id;
+      if (params.target.resource.id) {
+        targetResource = params.target.resource.id;
+        // 
+      }
+      // console.log(params);
+      // console.log(targetResource);
       var members = await fetch(
         scriptLink +
-        `?resource=members&src=${params.target.resource}&deny=${params.target.id}`
+        `?resource=members&src=${targetResource}&deny=${params.target.id}`
       );
       await members.json().then((result) => {
         for (var i = 0; i < result.length; i++) {
           var target = result[i];
           var records = new Array();
-          target.row.forEach((val) => {
-            // console.log(val)
-            val.data.forEach((data) => {
-              records.push({ collection: val.info.label, ...data });
+          // console.log(target);
+          if (!target.type.secret) {
+            target.row.forEach((val) => {
+              // console.log(val)
+              val.data.forEach((data) => {
+                records.push({ collection: val.info.label, ...data });
+              });
             });
-          });
-          navTreeView.append(
-            navItemComponent(target.type.name, "#" + target.type.id)
-          );
-          content.append(
-            cardComponent(
-              target.type.name,
-              target.type.id,
-              records,
-              records.length
-            )
-          );
+            navTreeView.append(
+              navItemComponent(target.type.name, "#" + target.type.id)
+            );
+            content.append(
+              cardComponent(
+                target.type.name,
+                target.type.id,
+                records,
+                records.length
+              )
+            );
+          }
         }
       });
-      params.auth = true;
     }
+    // if()
   } else {
     params.error = "Bad Request!";
   }
@@ -219,6 +268,7 @@ function cardComponent(title, id, imageObj, length) {
   component += `<div class="card-body row">`;
   imageObj.forEach(function (target) {
     // console.log(target)
+    target.description = target.description ? target.description : null;
     target.collection = target.collection ? target.collection : title;
     component += `<div class="col-sm-${col} mb-3">`;
     component += `<a href="javascript:void(0);" class="linkTarget">`;
@@ -234,7 +284,7 @@ function cardComponent(title, id, imageObj, length) {
 
 function navItemComponent(title, link = null, target = "_top") {
   var elements = `<li class="nav-item">`;
-  elements += `<a class="nav-link" onclick="window.open('${link}', '${target}')">`;
+  elements += `<a class="nav-link" onclick="window.open('${link}', '${target}');">`;
   elements += `<i class="far fa-circle nav-icon"></i>`;
   elements += `<p>${title}</p>`;
   elements += `</a>`;

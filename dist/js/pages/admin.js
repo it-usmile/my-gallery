@@ -50,7 +50,7 @@ $("a.btn-logout").on('click', (e) => {
             });
         }
     });
-    // console.log(e.target);
+    // // console.log(e.target);
 })
 
 $("form#authen").on('submit', async (e) => {
@@ -63,7 +63,7 @@ $("form#authen").on('submit', async (e) => {
     // // swalLoading();
     var data = await fetch(link);
     var result = await data.json();
-    console.log(result);
+    // // console.log(result);
     if (result.message) {
         //   // alert(result.message);
         swalMessage("Something went wrong", "Please try again", "error");
@@ -87,7 +87,8 @@ async function pageLoad() {
 
         return response;
     } else {
-        // console.log(ssuid)
+
+        // // console.log(ssuid)
         var targetResource, navLink, message;
         switch (request) {
             case 'collections':
@@ -95,38 +96,75 @@ async function pageLoad() {
                 break;
             case 'resources':
                 // nav-link-dropdown
+                $("a#" + id).addClass("active");
                 $(".nav-item-dropdown").addClass('menu-is-opening menu-open');
-                message = "Resource Name";
+                message = "Collection";
                 navLink = "dropdown";
+                targetResource = "members"
+            // break;
             default:
                 message = message ? message : "Dashboard";
                 navLink = navLink ? navLink : "index";
-                targetResource = "lists"
+                targetResource = targetResource ? targetResource : "lists"
         }
-        contentHeader.html(`<h1>${message}</h1>`);
-        $(`.nav-link-${navLink}`).addClass('active');
+
+        var resourceLists = await fetch(scriptLink + `?resource=lists`);
+        var resourceRow = await resourceLists.json();
+        resourceRow.forEach((row) => {
+            // // console.log(row);
+            if (row.id == id) {
+                message += ` ${row.title}`;
+            }
+            navTreeView.append(navItemComponent(row));
+        })
+
+
         var targetLink = scriptLink + `?resource=` + targetResource;
-        targetLink = id ? targetLink + `&id=` + id : targetLink;
+        targetLink += targetResource == "members" ? '&src=' : '&id=';
+        targetLink += id ? id : '';
         // //
         // console.log(targetLink);
         // //
         var target = await fetch(targetLink);
         await target.json().then((data) => {
             // //
+            // console.log(data)
             // //
             if (data.length > 0) {
                 data.forEach((val) => {
-                    console.log(val);
+                    // // console.log(val);
                     var tableBodyResources = $(".table-body-resources");
-                    navTreeView.append(navItemComponent(val));
-                    tableBodyResources.append(resourceRowComponent(val));
+                    if (val.row) {
+
+                        val.row.forEach((row) => {
+                            // console.log(row);
+                            var dataObj = { id: row.info.id, title: row.info.label };
+                            // dataArray.push(dataObj);
+                            tableBodyResources.append(resourceRowComponent(dataObj));
+                        })
+                    } else {
+                        // // console.log(val);
+                        tableBodyResources.append(resourceRowComponent(val));
+                    }
+                    // // console.log(dataObj);
+                    // if (dataArray.length > 0) {
+                    //     dataArray.forEach((row) => {
+                    //         tableBodyResources.append(resourceRowComponent(row));
+                    //     })
+                    // } else {
+                    //     tableBodyResources.append(resourceRowComponent(dataObj));
+                    // }
+                    // navTreeView.append(navItemComponent(val));
                 })
             }
-            // console.log(dataArray)
+            // // console.log(dataArray)
             // response.data = data;
         }).then(() => {
             contentResources.removeClass("d-none");
         })
+
+        contentHeader.html(`<h1>${message}</h1>`);
+        $(`.nav-link-${navLink}`).addClass('active');
     }
     return response;
 }
@@ -134,7 +172,7 @@ async function pageLoad() {
 
 function navItemComponent(dataObj) {
     var elements = `<li class="nav-item">`;
-    elements += `<a class="nav-link" onclick="window.open('admin.html?request=resources&id=${dataObj.id}', '_top')">`;
+    elements += `<a class="nav-link" id="${dataObj.id}" onclick="linkOpen(event, 'admin.html?request=resources');">`;
     elements += `<i class="far fa-circle nav-icon"></i>`;
     elements += `<p>${dataObj.title}</p>`;
     elements += `</a>`;
@@ -144,7 +182,7 @@ function navItemComponent(dataObj) {
 
 function resourceRowComponent(dataObj) {
     var targetLink = publicLink + 'index.html?request=';
-    targetLink += id ? 'secret&id=' : 'resources&id=';
+    targetLink += dataObj.resource ? 'lists&id=' : 'collections&id=';
     targetLink += dataObj.id;
     var elements = `<tr>`;
     elements += `<td>${dataObj.title}</td>`;
@@ -152,7 +190,7 @@ function resourceRowComponent(dataObj) {
     elements += `<a class="" onclick="window.open('${targetLink}', '_blank');" title="Public Link">Example<i class="fas fa-external-link-alt ml-2"></i></a>`;
     elements += `</td>`;
     elements += `<td>`;
-    elements += `<a class="mr-2" onclick="window.open('admin.html?request=resources&id=${dataObj.id}', '_top'"><i class="fas fa-search"></i></a>`;
+    elements += `<a class="mr-2" id="${dataObj.id}" onclick="linkOpen(event, 'admin.html?request=resources');"><i class="fas fa-search"></i></a>`;
     elements += `</td>`;
     elements += `</tr>`;
     return elements;
