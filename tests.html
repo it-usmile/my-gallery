@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
-    <title>Admin | USmile Dee Collections</title>
+    <title>Tests | USmile Dee Collections</title>
     <meta name="generator" content="GNosZ" />
-    <meta property="og:title" content="Admin" />
+    <meta property="og:title" content="Tests" />
     <meta property="og:locale" content="en_US" />
     <meta name="description" content="USmile Dee Collections" />
     <meta property="og:description" content="USmile Dee Collections" />
 
     <meta property="og:site_name" content="USmile Dee" />
     <meta name="twitter:card" content="summary" />
-    <meta property="twitter:title" content="Admin" />
+    <meta property="twitter:title" content="Tests" />
 
     <link
       rel="apple-touch-icon"
@@ -173,7 +173,7 @@
               <li class="nav-item">
                 <a
                   class="nav-link nav-link-index"
-                  onclick="window.open('admin.html','_top')"
+                  onclick="window.open('tests.html','_top')"
                 >
                   <i class="nav-icon fas fa-images"></i>
                   <p>Dashboard</p>
@@ -209,171 +209,28 @@
         </div>
       </aside>
       <div class="content-wrapper px-4 py-2">
-        <div class="content-header">
-          <!-- <h1>Introduction</h1> -->
-        </div>
+        <div class="content-header"><h1>Title</h1></div>
 
         <div class="content px-2">
           <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio eligendi et unde fugiat.</p> -->
-          <div class="card content-resources d-none mb-3">
-            <div class="card-header">
-              <h3 class="card-title">All resource in the database.</h3>
-              <div class="card-tools">
-                <button
-                  type="button"
-                  class="btn btn-tool"
-                  title="Add new resource"
-                  onclick="newResource(event);"
-                >
-                  <i class="fas fa-plus"></i>
-                </button>
+          <!--  -->
+          <!-- <textarea name="" id=""></textarea> -->
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modal-default" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <form class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Default Modal</h4>
               </div>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table
-                id="example1"
-                class="table table-bordered table-striped nowrap"
-              >
-                <thead>
-                  <tr>
-                    <th>TITLE</th>
-                    <th>SOURCE</th>
-                    <th>OPTIONS</th>
-                  </tr>
-                </thead>
-                <tbody class="table-body-resources">
-                  <!--  -->
-                  <!-- test -->
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <th>TITLE</th>
-                    <th>SOURCE</th>
-                    <th>OPTIONS</th>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
-          <div class="card content-collections d-none mb-3">
-            <div class="card-header">
-              <h3 class="card-title">DataTable with default features</h3>
-              <div class="card-tools">
-                <div class="btn-group">
-                  <button
-                    type="button"
-                    class="btn btn-tool"
-                    data-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <i class="fas fa-plus"></i>
-                  </button>
-                  <div class="dropdown-menu dropdown-menu-right" role="menu">
-                    <!-- <a href="#" class="dropdown-item">Action</a>
-                    <a href="#" class="dropdown-item">Another action</a>
-                    <a href="#" class="dropdown-item">Something else here</a>
-                    <a class="dropdown-divider"></a>
-                    <a href="#" class="dropdown-item">Separated link</a> -->
-                  </div>
-                </div>
+              <div class="modal-body">...</div>
+              <div class="modal-footer border-0 justify-content-end pt-0">
+                <input type="submit" class="btn btn-primary" />
               </div>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table
-                id="example2"
-                class="table table-bordered table-striped nowrap"
-              >
-                <thead>
-                  <tr>
-                    <th>TITLE</th>
-                    <th>SOURCE</th>
-                    <th>TYPE</th>
-                    <th>OPTIONS</th>
-                  </tr>
-                </thead>
-                <tbody class="table-body-collections">
-                  <!--  -->
-                  <!-- test -->
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <th>TITLE</th>
-                    <th>SOURCE</th>
-                    <th>TYPE</th>
-                    <th>OPTIONS</th>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-            <!-- /.card-body -->
+            </form>
+            <!-- /.modal-content -->
           </div>
-          <!-- /.card -->
-          <div class="card content-types d-none mb-3">
-            <div class="card-header">
-              <h3 class="card-title">Resource Types</h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table
-                id="example2"
-                class="table table-bordered table-striped nowrap"
-              >
-                <thead>
-                  <tr>
-                    <th>NAME</th>
-                    <th>NOTE</th>
-                    <th>SECRET</th>
-                    <th>OPTIONS</th>
-                  </tr>
-                </thead>
-                <tbody class="table-body-types">
-                  <!--  -->
-                  <!-- test -->
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <th>NAME</th>
-                    <th>NOTE</th>
-                    <th>SECRET</th>
-                    <th>OPTIONS</th>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
-
-          <!-- Modal -->
-          <div class="modal fade" id="modal-default" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <form class="modal-content">
-                <div class="modal-header">
-                  <h4 class="modal-title">Default Modal</h4>
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true">×</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <p>One fine body…</p>
-                </div>
-                <div class="modal-footer border-0 justify-content-end pt-0">
-                  <input type="submit" class="btn btn-primary" />
-                </div>
-              </form>
-              <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-          </div>
+          <!-- /.modal-dialog -->
         </div>
       </div>
       <footer class="main-footer">
@@ -405,6 +262,6 @@
     <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
     <script src="dist/js/adminlte.js"></script>
     <script src="dist/js/master.js"></script>
-    <script src="dist/js/pages/admin.js"></script>
+    <script src="dist/js/pages/tests.js"></script>
   </body>
 </html>

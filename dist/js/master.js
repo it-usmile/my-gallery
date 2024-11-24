@@ -1,4 +1,3 @@
-
 var scriptLink = `https://script.google.com/macros/s/AKfycbxO5fNXc7c7OoSwo7juM6c-0-FqKxgsih9RoDtGn769cfBTgxpdTybEUailm9Fli_R7/exec`;
 var publicLink = `https://it-usmile.github.io/my-gallery/`;
 var publicLink = `//127.0.0.1:5500/`;
@@ -37,7 +36,7 @@ if (currentTheme) {
 
 function linkOpen(event, location, target = "_top") {
   var id = event.target.id ? event.target.id : null;
-  window.open(`${location}&id=${id}`, target)
+  window.open(`${location}&id=${id}`, target);
 }
 // $(document.body).load(() => {
 
@@ -65,7 +64,13 @@ function switchTheme(e) {
   }
 }
 
-function swalLoading(title, html = null, icon = false, timer = false, loading = true) {
+function swalLoading(
+  title,
+  html = null,
+  icon = false,
+  timer = false,
+  loading = true
+) {
   title = title ? title : "Loading";
   var showConfirmButton = loading ? true : false;
   return Swal.fire({
@@ -82,15 +87,17 @@ function swalLoading(title, html = null, icon = false, timer = false, loading = 
         Swal.showLoading();
       }
       const timer = Swal.getPopup().querySelector("span");
-      setInterval(() => {
-        if (i < 3) {
-          timer.textContent += `.`;
-          i++;
-        } else {
-          timer.textContent = ``;
-          i = 0;
-        }
-      }, 1000);
+      if (showConfirmButton) {
+        setInterval(() => {
+          if (i < 3) {
+            timer.textContent += `.`;
+            i++;
+          } else {
+            timer.textContent = ``;
+            i = 0;
+          }
+        }, 1000);
+      }
     },
   });
 }
@@ -107,8 +114,6 @@ function swalMessage(title, html, icon = false, confirmButtonText = "OK") {
   });
 }
 
-
-
 function hidePreloader() {
   var preloader = $(".preloader");
   preloader.css("height", 0);
@@ -121,6 +126,10 @@ function urlParams() {
   var queryString = window.location.search;
   var result = new URLSearchParams(queryString);
   return result;
+}
+
+function capitalizeFirstLetter(val) {
+  return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }
 
 toggleSwitch.addEventListener("change", switchTheme, false);
