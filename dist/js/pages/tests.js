@@ -1,36 +1,102 @@
 const ssuid = localStorage.getItem("ssuid");
 
 $(async () => {
-  if (ssuid) {
-    mainAuthen.addClass("d-none");
-    let target = new Object();
-    target.content = [request];
-    target.script = scriptLink + `?resource=`;
-    target.title = capitalizeFirstLetter(target.content);
-    switch (target.content) {
-      case "settings":
-        target.content.push("resource-types");
-        break;
-      case "resources":
-      default:
-        target.content = ["resources"];
-        target.script += "lists";
-        target.title = "Dashboard";
+  var resourceLists = await fetch(scriptLink + `?resource=lists`);
+  var resourceRow = await resourceLists.json();
+  resourceRow.forEach((row) => {
+    if (row.id == id) {
+      message = row.title;
     }
-    // target.script+= res
-    // target.
-    console.log(target);
-    target.row = new Array();
-    $(".content-header>h1").html(target.title);
-    const resource = await fetch(target.script);
-    await resource.json().then((result) => {
-      console.log(result);
-    });
-    // $(".content").html(cardTableComponent(target));
-  } else {
-    swalMessage("Unauthorization", "Please sign in first!", "error");
-  }
+    navTreeView.append(navItemComponent(row));
+  });
+
   hidePreloader();
+  // var response = new Object();
+  if (!ssuid) {
+    return swalMessage("Unauthorization", "Please sign in first!", "error");
+  }
+  mainAuthen.addClass("d-none");
+  let target = new Object(), htmlOutput = '';
+  target.content = "resources";
+  target.script = scriptLink + `?resource=`;
+  target.title = capitalizeFirstLetter(request);
+  target.options = {
+    responsive: true,
+    autoWidth: false,
+  };
+  let currentAddons = new Array();
+  switch (request) {
+    case "settings":
+      target.content = "resource-types";
+      currentAddons.push({ content: "account-supers", script: target.script + 'supers', options: target.options });
+      target.script = target.script + "types";
+      break;
+    case "resources":
+      $(".nav-item-dropdown").addClass("menu-is-opening menu-open");
+    default:
+      let newScript = "lists";
+      target.title = "Dashboard";
+      if (id) {
+        newScript = `members&src=` + id;
+        target.title = message;
+        target.content = "collections";
+      }
+      target.script += newScript;
+    // console.log(target);
+    // if (!id) {
+    // target.options.columnDefs = [{ targets: [0, 2], visible: false },
+    // { targets: [1, 2], searchable: false, orderable: false },
+    // ]
+    // }
+    //     if (!target.content.includes("resources")) {
+    //       target.content = [request];
+    //     }
+    //   // target.content = target.content.includes("resources") ? target.content : [request];
+    //   // target.title = target.title ? target.title : capitalizeFirstLetter(target.content);
+  }
+  // target.script+= res
+  // target.
+  // response.target = target;
+  // console.log({ target });
+  // target.row = new Array();
+  $(".content-header>h1").html(target.title);
+  let targetTable = null;
+  const resource = await fetch(target.script);
+  await resource.json().then((row) => {
+    // console.log({ target, row });
+    target.row = row;
+    console.log(target)
+    $(".content").html(cardTableComponent(target));
+    // targetTable = target.content;
+    // tableArray.push({ target: targetTabl, options: target.options });
+    $("#example-" + target.content)
+      .DataTable(target.options)
+      .buttons()
+      .container()
+      .appendTo(
+        "#example-" + target.content + "_wrapper .col-md-6:eq(0)"
+      );
+  });
+  currentAddons.forEach(async (current) => {
+    const addons = await fetch(current.script);
+    await addons.json().then((row) => {
+      target.addons = { ...current, row };
+      console.log(target);
+      $(".content").append(cardTableComponent(target.addons));
+      // targetTable = target.addons.content;
+      // tableArray.push({ target: targetTabl, options: target.options });
+      $("#example-" + target.addons.content)
+        .DataTable(target.addons.options)
+        .buttons()
+        .container()
+        .appendTo(
+          "#example-" + target.addons.content + "_wrapper .col-md-6:eq(0)"
+        );
+      // console.log({ target: current, row })
+      // target.addons.push({ target: current, row });
+    })
+  })
+  // console.log(target);
 });
 
 $("form#authen").on("submit", async (e) => {
@@ -60,30 +126,104 @@ $("form#authen").on("submit", async (e) => {
 });
 
 const cardTableComponent = (dataObj) => {
+  // console.log(rowTableComponent(dataObj.row));
   //   console.log(dataObj);
+  let content = dataObj.content;
+  let array = content.split("-");
+  // let title = capitalizeFirstLetter(array[0]) + " " + capitalizeFirstLetter(array[array.length - 1]);
+  let title = '';
+  array.forEach((val) => {
+    title += capitalizeFirstLetter(val) + ' ';
+  })
   var element = `<div class="card content-${dataObj.content}">`;
   element += `<div class="card-header">`;
-  element += `<h3 class="card-title">${capitalizeFirstLetter(
-    dataObj.content
-  )}</h3>`;
+  element += `<h3 class="card-title">${title}</h3>`;
   element += `</div>`;
   element += `<div class="card-body">`;
-  element += `<table id="example" class="table table-bordered table-striped nowrap">`;
+  element += `<table id="example-${dataObj.content}" class="table table-bordered table-striped nowrap">`;
   element += rowTableComponent(dataObj.row);
   element += `</table>`;
   element += `</div>`;
   element += `<div class="card-footer border-0">`;
   element += `</div>`;
   element += `</div>`;
+
   return element;
 };
 
 const rowTableComponent = (dataArray) => {
-  var element = "";
-  var dataTables = ({ thead, tbody } = new Array());
-  dataArray.forEach((val, key) => {
-    console.log({ val, key });
-  });
+  // return dataArray;
+  console.log(dataArray);
+  let element = "", thead = new Array(), tbody = new Array();
+  dataArray.forEach((row) => {
+    let already = false;
+    // console.log(row);
+
+    // thead.push(key);
+    // tbody.push(val);
+    // let targetTitle = targetData = new Array();;
+    for (let i in row) {
+      thead.forEach((column) => {
+        if (column == i) {
+          already = true;
+        }
+      })
+      if (!already) {
+        thead.push(i);
+      }
+      //   // thead.push(i);
+      //   targetTitle.push(i);
+      //   targetData.push(row[i]);
+    }
+    tbody.push(Object.values(row));
+    // thead = targetTitle;
+    // tbody = targetData;
+  })
+  element += `<thead>`;
+  // console.log(thead)
+  element += `<tr>`;
+  thead.forEach((title) => {
+    element += `<th>${title}</th>`;
+  })
+  element += `<th>options</th>`;
+  element += `</tr>`;
+  element += `</thead>`;
+  element += `<tbody>`;
+  // console.log(tbody);
+  tbody.forEach((row) => {
+    element += `<tr>`;
+    row.forEach((column) => {
+
+      element += `<td>${column}</td>`;
+    })
+    element += `<td>`;
+    element += `</td>`;
+    element += `</tr>`;
+  })
+  element += `</tbody>`;
+  element += `<tfoot>`;
+  element += `<tr>`;
+  thead.forEach((title) => {
+    element += `<th>${title}</th>`;
+  })
+  element += `<th>options</th>`;
+  element += `</tr>`;
+  element += `</tfoot>`;
+
+  // thead.forEach((row) => {
+  //   element += `<tr>`;
+  //   // console.log(row)
+  //   row.forEach((val) => {
+  //     element += `<th>${val}</th>`;
+  //   })
+  //   element += `</tr>`;
+  // })
+
+  // for (let i = 0; i < dataArray.length; i++) {
+  //   element += `<td></td>`;
+
+  // }
+  return element;
 };
 
 // const
@@ -320,19 +460,19 @@ const rowTableComponent = (dataArray) => {
 //   return response;
 // }
 
-// function navItemComponent(dataObj) {
-//   var elements = `<li class="nav-item">`;
-//   var active;
-//   if (id && id == dataObj.id) {
-//     active = "active";
-//   }
-//   elements += `<a class="nav-link ${active}" id="${dataObj.id}" onclick="linkOpen(event, 'admin.html?request=resources');">`;
-//   elements += `<i class="far fa-circle nav-icon"></i>`;
-//   elements += `<p>${dataObj.title}</p>`;
-//   elements += `</a>`;
-//   elements += `</li>`;
-//   return elements;
-// }
+function navItemComponent(dataObj) {
+  var elements = `<li class="nav-item">`;
+  var active = id == dataObj.id ? "active" : '';
+  // if (id && id == dataObj.id) {
+  //   active = "active";
+  // }
+  elements += `<a class="nav-link ${active}" id="${dataObj.id}" onclick="linkOpen(event, 'tests.html?request=resources');">`;
+  elements += `<i class="far fa-circle nav-icon"></i>`;
+  elements += `<p>${dataObj.title}</p>`;
+  elements += `</a>`;
+  elements += `</li>`;
+  return elements;
+}
 
 // function resourceRowComponent(dataObj) {
 //   console.log(dataObj);
