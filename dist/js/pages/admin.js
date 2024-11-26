@@ -40,8 +40,7 @@ if (request == "settings") {
 }
 
 pageLoad().then(async (response) => {
-  hidePreloader();
-  console.log(response);
+  //   console.log(response);
   // hidePreloader();
   var icon = "success";
   var title = "Your resources has been loaded";
