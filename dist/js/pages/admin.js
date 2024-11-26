@@ -35,6 +35,10 @@ if (id) {
   };
 }
 
+if(request=="settings"){
+  targetTable=3;
+}
+
 pageLoad().then(async (response) => {
   //   console.log(response);
   // hidePreloader();
