@@ -396,7 +396,7 @@ function resourceRowComponent(dataObj) {
     }
     outputArray[
       n
-    ] = `<a class="mr-2" id="${dataObj.id}" onclick="" title="RQCode"><i class="fas fa-qrcode text-info"></i></a>`;
+    ] = `<a class="mr-2" data-link="${targetLink}" data-title="${dataObj.title}" onclick="makeCode(event)" title="RQCode"><i class="fas fa-qrcode text-info"></i></a>`;
     outputArray[
       n
     ] += `<a class="mr-2" onclick="window.open('https://drive.google.com/drive/u/0/folders/${dataObj.id}', '_blank');" title="${options.title}"><i class="fas fa-${options.icon} text-secondary"></i></a>`;
@@ -821,4 +821,58 @@ async function ggDecode(e) {
   });
   //
   // console.log(dataObj);
+}
+
+function makeCode(e) {
+  e.preventDefault();
+  var text = e.target.dataset.link;
+  // swalLoading();
+  Swal.fire({
+    html: `<div id="qrcode" class=""></div>`,
+    showCancelButton: true,
+    confirmButtonText: "Download",
+    didOpen: () => {
+      // new QRCode("#qrcode", link);
+      new QRCode("qrcode", {
+        text,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      $("#qrcode > img").css({ "margin": "auto" });
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      let dataUrl = document.querySelector("#qrcode").querySelector("img").src;
+      // let dataUrl = $("#qrcode").find("img").src;
+      // downloadURI(dataUrl, ".png");
+
+      // console.log(dataUrl);
+      var targetLink = document.createElement("a");
+      targetLink.download = "RQCode_" + e.target.dataset.title + ".png";
+      targetLink.href = dataUrl;
+      document.body.appendChild(targetLink);
+      targetLink.click();
+      document.body.removeChild(targetLink);
+      delete targetLink;
+      // var targetLink = document.getElementById('qrcode').toDataURL();
+      // console.log(targetLink);
+      // console.log(qrCodes.toDataURL())
+      // qrCodes.forEach((canvas) => {
+      //   console.log(canvas)
+      // })
+      // qrCodes.forEach((canvas, colIndex) => {
+      //   var link = document.createElement("a");
+      //   link.setAttribute("download", `qr_code_${rowIndex + 1}_${colIndex + 1}.png`);
+      //   link.href = canvas.toDataURL();
+      //   link.click();
+      // });
+      // var link = document.createElement("a");
+      // link.setAttribute("download", `qr_code_${e.target.dataset.title}.png`);
+      // link.href = text;
+      // link.click();
+    }
+  })
+  // swalMessage(null, `<div id="qrcode"></div>`);
+  console.log({ target: e.target, text });
 }
