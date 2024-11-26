@@ -41,11 +41,7 @@ if (request == "settings") {
 
 pageLoad().then(async (response) => {
   //   console.log(response);
-<<<<<<< HEAD
   hidePreloader();
-=======
-  // hidePreloader();
->>>>>>> dc4ac9f794cf36c6417a868f1cffe9ee3f7ea1d9
   var icon = "success";
   var title = "Your resources has been loaded";
   if (!response.auth) {
