@@ -35,12 +35,13 @@ if (id) {
   };
 }
 
-if(request=="settings"){
-  targetTable=3;
+if (request == "settings") {
+  targetTable = 3;
 }
 
 pageLoad().then(async (response) => {
-  //   console.log(response);
+  hidePreloader();
+  console.log(response);
   // hidePreloader();
   var icon = "success";
   var title = "Your resources has been loaded";
